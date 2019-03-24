@@ -1,14 +1,17 @@
 package dsirbu.com.contactsmanager;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -37,9 +40,12 @@ public class ContactsManagerActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null) {
-
-            String phone_no = intent.getStringExtra("dsirbu.com.contactsmanager.PHONE_NUMBER_KEY");
-            phone.setText(phone_no);
+            String phone = intent.getStringExtra("dsirbu.com.contactsmanager.PHONE_NUMBER_KEY");
+            if (phone != null) {
+                this.phone.setText(phone);
+            } else {
+                Toast.makeText(this, getResources().getString(R.string.phone_error), Toast.LENGTH_LONG).show();
+            }
         }
 
         show_details.setOnClickListener(new View.OnClickListener() {
@@ -93,16 +99,28 @@ public class ContactsManagerActivity extends AppCompatActivity {
                     contactData.add(imRow);
                 }
                 intent.putParcelableArrayListExtra(ContactsContract.Intents.Insert.DATA, contactData);
-                startActivity(intent);
+                startActivityForResult(intent, Constants.CONTACTS_MANAGER_REQUEST_CODE);
             }
         });
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setResult(Activity.RESULT_CANCELED, new Intent());
                 finish();
             }
         });
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        switch(requestCode) {
+            case Constants.CONTACTS_MANAGER_REQUEST_CODE:
+                setResult(resultCode, new Intent());
+                Log.i("OnactivityResult", "2");
+                finish();
+                break;
+        }
     }
 }

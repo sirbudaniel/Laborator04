@@ -8,4 +8,5 @@
     <string name="Company">Company</string>
     <string name="Website">Website</string>
     <string name="Im">IM</string>
+    <string name="phone_error">PHONE ERROR</string>
 </resources>
